@@ -23,13 +23,14 @@ class DigitalRainAnim {
     void loop();                         //loop animation
     void pause();                        //pause animation 
     void resume();                       //resume animation
-     
+    void stop();
+
   private:
     TFT_eSPI* tft_DigitalRainAnim; //target display TFT_eSPI
     TFT_eSprite* spr; 
 
     int line_len_min;              //minimum length of characters 
-    int line_len_max;              //maximum length of characters 
+    int line_len_max;              //maximum length of characters c
     int line_speed_min;            //minimum vertical move speed
     int line_speed_max;            //maximum vertical move speed
     int width, height;             //width, height of display
@@ -41,7 +42,9 @@ class DigitalRainAnim {
     int* line_length;  //dynamic array for each line of vertical length
     int* line_pos;     //dynamic array for eacg line Y position
     int* line_speed;   //dynamic array for eacg line speed
- 
+
+    bool isEnding;
+
     void prepareAnim();                 //the function is to prepare all lines at the beginning
     void lineUpdate(int lineNum);       //the function is to update each line after disappeared from the screen
     void lineAnimation(int lineNum);    //the function is to update each line
