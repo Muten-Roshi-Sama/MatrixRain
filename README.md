@@ -1,7 +1,6 @@
 # MatrixRain  
 
-![matrixRain_TFTDisplay](https://github.com/user-attachments/assets/f37be4f2-227d-4394-9085-43fb4752e661)
-
+![matrixRain_TFTDisplay](https://github.com/user-attachments/assets/a754106c-ec9b-407c-b23e-888137f63c4e)
 Forked from:https://github.com/delhoume/MatrixRain
 
 A **Matrix rain** effect using **TFT_eSPI** and a modified version of **DigitalRainAnim**.  
@@ -54,3 +53,4 @@ void DigitalRainAnim::lineAnimation(int lineNum) {
   }
 }
 ```
+
