@@ -24,7 +24,7 @@ void DigitalRainAnim::init(TFT_eSPI* tft){
 }
 
 void DigitalRainAnim::init(TFT_eSPI* tft, int new_line_len_min, int new_line_len_max, 
-                           int new_line_speed_min, int new_line_speed_max, int new_timeFrame) {
+                          int new_line_speed_min, int new_line_speed_max, int new_timeFrame) {
   tft_DigitalRainAnim = tft; 
   line_len_min = new_line_len_min;
   line_len_max = new_line_len_max;
@@ -59,7 +59,7 @@ void DigitalRainAnim::prepareAnim() {
     line_speed[i]  = getRandomNum(line_speed_min, line_speed_max);
   }
   isPlaying = true;
- }
+}
 
 //updating each line with a new length, Y position, and speed.
 void DigitalRainAnim::lineUpdate(int lineNum) {
@@ -73,8 +73,14 @@ void DigitalRainAnim::lineAnimation(int lineNum) {
   int startX = lineNum * LINE_WIDTH;
   int currentY = 0;
 
-  spr->fillSprite(TFT_BLACK);
+  spr->fillSprite(TFT_BLACK);  // Clear the sprite before drawing
 
+  // If the end of the line has reached the bottom and IsEnding is true, stop drawing
+  if ((line_pos[lineNum]-line_length[lineNum]) >= height && isEnding){
+    return;
+  }
+
+  // Draw each character in the line
   for(int i = 0; i < line_length[lineNum]; i++) {
     int colorVal = map(i, 0, line_length[lineNum], 25, 255);    
     spr->setCursor(0, line_pos[lineNum] + currentY);
@@ -83,22 +89,25 @@ void DigitalRainAnim::lineAnimation(int lineNum) {
     currentY = (i * LETTER_HEIGHT);
   }  
 
-  // last one (white)
-     spr->setCursor(0, line_pos[lineNum] + currentY);
+  // Draw last character as white (highlight)
+    spr->setCursor(0, line_pos[lineNum] + currentY);
     spr->setTextColor(TFT_WHITE, TFT_BLACK);
     spr->drawGlyph(getUnicodeChar()); 
-    
+    // Push the sprite to the main screen
     spr->pushSprite(startX, 0);
 
+  // Move the line down
   line_pos[lineNum] += line_speed[lineNum];
-  if (line_pos[lineNum] >= height){
+
+  // If the line reaches the bottom, restart it at the top IF not stop() -FLAG
+  if (line_pos[lineNum] >= height && !isEnding){
     lineUpdate(lineNum);
   }
 }
- int DigitalRainAnim::getUnicodeChar() {
+int DigitalRainAnim::getUnicodeChar() {
   // some ascii most hiragana
   return random(0, 10) == 0 ? random(65, 91) : random(12353, 12438);
- }
+}
 
 //a function where animation continues to run.
 void DigitalRainAnim::loop(){
@@ -125,6 +134,7 @@ void DigitalRainAnim::pause() {
 //a function to resume animation.
 void DigitalRainAnim::resume() {
   isPlaying = true;
+  isEnding = false;
 }
 
 //a function that gets randomly from ASCII code 33 to 126.
@@ -140,4 +150,9 @@ int DigitalRainAnim::setYPos(int lineLen) {
 //the function is to get the random number (including max)
 int DigitalRainAnim::getRandomNum(int min, int max) {
   return random(min, max+1);
+}
+
+
+void DigitalRainAnim::stop() {
+  isEnding = true;
 }
